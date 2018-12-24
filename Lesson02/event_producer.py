@@ -12,8 +12,7 @@ def get_line():
     of events at random
     """
     random.seed(datetime.utcnow().microsecond)
-    dt = datetime.utcnow()\
-        .strftime('%Y-%m-%d %H:%M:%S.%f')
+    dt = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
     event = random.choice(['event1', 'event2', 'event3'])
     return '{};{}\n'.format(dt, event).encode('utf-8')
 
@@ -48,20 +47,13 @@ def initialize(port=9876, interval=0.5):
             time.sleep(randomize_interval(interval))
     except Exception as e:
         print(e)
-
     finally:
         sock.close()
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--port', required=False, default=9876,
-        help='Port', type=int)
-
-    parser.add_argument(
-        '--interval', required=False, default=0.5,
-        help='Interval in seconds', type=float)
-
+    parser.add_argument('--port', required=False, default=9876,help='Port', type=int)
+    parser.add_argument('--interval', required=False, default=0.5,help='Interval in seconds', type=float)
     args, extra_params = parser.parse_known_args()
     initialize(port=args.port, interval=args.interval)
 
