@@ -35,12 +35,10 @@ def update_global_event_counts(key_value_pairs):
         if runningCount is None:
             runningCount = 0
         return sum(newValues, runningCount)  # add the new values with the previous running count to get the new count
-
     return key_value_pairs.updateStateByKey(updateFunction)
 
 
-def consume_records(
-        interval=1, host='localhost', port=9876):
+def consume_records(interval=1, host='localhost', port=9876):
     """
     Create a local StreamingContext with two working
     thread and batch interval of 1 second
@@ -48,12 +46,10 @@ def consume_records(
     spark_context = SparkContext(appName='LogSocketConsumer')
     stream_context = StreamingContext(spark_context, interval)
     stream = stream_context.socketTextStream(host, port)
-
     # counts number of events
     event_counts = aggregate_by_event_type(stream)
     event_counts.pprint()
-    key_value_pairs = stream.map(parse_entry)\
-        .map(lambda record: (record['event'], 1))
+    key_value_pairs = stream.map(parse_entry).map(lambda record: (record['event'], 1))
     running_event_counts = update_global_event_counts(key_value_pairs)
     running_event_counts.pprint()
     stream_context.start()
@@ -61,20 +57,11 @@ def consume_records(
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--interval', required=False, default=1.0,
-        help='Interval in seconds', type=float)
-
-    parser.add_argument(
-        '--port', required=False, default=9876,
-        help='Port', type=int)
-
-    parser.add_argument(
-        '--host', required=False, default='localhost', help='Host')
-
+    parser.add_argument('--interval', required=False, default=1.0,help='Interval in seconds', type=float)
+    parser.add_argument('--port', required=False, default=9876,help='Port', type=int)
+    parser.add_argument('--host', required=False, default='localhost', help='Host')
     args, extra_params = parser.parse_known_args()
-    consume_records(
-        interval=args.interval, port=args.port, host=args.host)
+    consume_records(interval=args.interval, port=args.port, host=args.host)
 
 
 if __name__ == '__main__':
